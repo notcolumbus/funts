@@ -3,9 +3,11 @@ import { useEffect, useState } from "react"
 import cloud from "../assets/cloud.png"
 import { Hero } from "./components/Hero"
 import { MainApp } from "./components/MainApp"
+import { backgroundThemes } from "./components/ThemeSelector"
 
 export function App() {
   const [hasStarted, setHasStarted] = useState(false)
+  const [selectedTheme, setSelectedTheme] = useState(backgroundThemes[0])
 
   function startApp() {
     setHasStarted(true)
@@ -30,7 +32,9 @@ export function App() {
 
   return (
     <main className="h-screen w-screen overflow-hidden" onClick={startApp}>
-      <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-linear-to-b from-[#0072cd] to-[#60baff]">
+      <div
+        className={`relative flex h-full w-full items-center justify-center overflow-hidden ${selectedTheme.backgroundClassName}`}
+      >
         <img
           src={cloud}
           alt="cloud"
@@ -41,7 +45,11 @@ export function App() {
           alt="cloud"
           className="pointer-events-none absolute top-24 -right-32 w-[420px] opacity-85"
         />
-        {hasStarted ? <MainApp /> : <Hero />}
+        {hasStarted ? (
+          <MainApp selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
+        ) : (
+          <Hero textClassName={selectedTheme.textClassName} />
+        )}
       </div>
     </main>
   )

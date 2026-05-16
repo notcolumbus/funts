@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Alata&display=swap");
+
 @font-face {
   font-family: "Funts";
   src: url("../assets/font.ttf") format("truetype");
@@ -8,4 +10,8 @@
 
 .funts-font {
   font-family: "Funts", sans-serif;
+}
+
+.interface-font {
+  font-family: "Alata", sans-serif;
 }
