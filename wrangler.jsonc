@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "funts-next",
+  "name": "funts",
   "main": "vinext/server/fetch-handler",
   "compatibility_date": "2026-11-07",
   "compatibility_flags": ["nodejs_compat"],

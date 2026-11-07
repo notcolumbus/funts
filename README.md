@@ -23,6 +23,6 @@ npx wrangler deploy --dry-run --config dist/server/wrangler.json
 npm run deploy
 ```
 
-`wrangler.jsonc` binds `DB` to the existing D1 database ID and gives the new Worker a separate name (`funts-next`). Confirm your Cloudflare account, database binding, domain, and deployment target before deploying. The application only reads the catalog; the old API is a separate deployment and must be secured or retired separately. The checked-in local seed is not a production schema migration or backup.
+`wrangler.jsonc` binds `DB` to the existing D1 database ID and targets the existing Git-connected Worker (`funts`). Confirm your Cloudflare account, database binding, domain, and deployment target before deploying. The application only reads the catalog; the old API is a separate deployment and must be secured or retired separately. The checked-in local seed is not a production schema migration or backup.
 
 The browser loads selected fonts from Google Fonts. Font recommendations and catalog administration are not implemented yet.
