@@ -1,11 +1,13 @@
+"use client"
+
 import { useEffect, useState } from "react"
 
-import cloud from "../assets/cloud.png"
-import { Hero } from "./components/Hero"
-import { MainApp } from "./components/MainApp"
-import { backgroundThemes } from "./components/ThemeSelector"
 
-export function App() {
+import { Hero } from "./Hero"
+import { MainApp } from "./MainApp"
+import { backgroundThemes } from "./ThemeSelector"
+
+export function FuntsApp() {
   const [hasStarted, setHasStarted] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState(backgroundThemes[0])
 
@@ -36,12 +38,12 @@ export function App() {
         className={`relative flex h-full w-full items-center justify-center overflow-hidden ${selectedTheme.backgroundClassName}`}
       >
         <img
-          src={cloud}
+          src="/cloud.png"
           alt="cloud"
           className="pointer-events-none absolute top-6 -left-40 w-[520px] opacity-95"
         />
         <img
-          src={cloud}
+          src="/cloud.png"
           alt="cloud"
           className="pointer-events-none absolute top-24 -right-32 w-[420px] opacity-85"
         />

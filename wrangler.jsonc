@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "funts-next",
+  "main": "vinext/server/fetch-handler",
+  "compatibility_date": "2026-11-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "./dist/client", "binding": "ASSETS" },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "funts",
+    "database_id": "3e1f7366-d26d-4817-8146-9bdd8f5921f9"
+  }],
+  "observability": { "enabled": true }
+}

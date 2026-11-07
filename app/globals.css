@@ -1,12 +1,13 @@
+@import url("https://fonts.googleapis.com/css2?family=Alata&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/figtree";
 
 @custom-variant dark (&:is(.dark *));
-@source "../../../apps/**/*.{ts,tsx}";
-@source "../../../components/**/*.{ts,tsx}";
-@source "../**/*.{ts,tsx}";
+@source "../components/**/*.{ts,tsx}";
+
+
 
 @theme inline {
     --font-heading: var(--font-sans);
@@ -130,4 +131,20 @@
   button:not(:disabled), [role="button"]:not(:disabled) {
     cursor: pointer;
     }
+}
+
+@font-face {
+  font-family: "Funts";
+  src: url("/font.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.funts-font {
+  font-family: "Funts", sans-serif;
+}
+
+.interface-font {
+  font-family: "Alata", sans-serif;
 }

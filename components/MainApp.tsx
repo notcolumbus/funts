@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 
-import { getFontFamily } from "@/data/fonts"
+import { getFontFamily } from "@/lib/fonts"
 import { useFontLoader } from "@/hooks/useFontLoader"
 import { useFonts } from "@/hooks/useFonts"
 
@@ -16,9 +16,7 @@ type MainAppProps = {
 export function MainApp({ selectedTheme, onSelectTheme }: MainAppProps) {
   const {
     current,
-    deleteCurrent,
     error,
-    isDeleting,
     isLoading,
     nextFont,
     previousFont,
@@ -32,7 +30,7 @@ export function MainApp({ selectedTheme, onSelectTheme }: MainAppProps) {
 
   useEffect(() => {
     if (current) {
-      void loadFont(current)
+      void loadFont(current).catch(() => {})
     }
   }, [current, loadFont])
 
@@ -78,10 +76,6 @@ export function MainApp({ selectedTheme, onSelectTheme }: MainAppProps) {
         return
       }
 
-      if (event.key.toLowerCase() === "d") {
-        event.preventDefault()
-        void deleteCurrent()
-      }
     }
 
     window.addEventListener("keydown", handleKeyDown)
@@ -89,7 +83,7 @@ export function MainApp({ selectedTheme, onSelectTheme }: MainAppProps) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [deleteCurrent, nextFont, previousFont])
+  }, [nextFont, previousFont])
 
   const statusText = isLoading
     ? "Loading fonts..."
@@ -144,17 +138,10 @@ export function MainApp({ selectedTheme, onSelectTheme }: MainAppProps) {
       <div className="absolute bottom-5 left-5 flex items-center gap-3 px-3 py-2">
         <p className="text-lg leading-tight font-semibold sm:text-xl">{statusText}</p>
         {current ? (
-          <button
-            type="button"
-            className="rounded-full border border-current px-3 py-1 text-xs uppercase tracking-wide opacity-70 transition hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-40"
-            disabled={isDeleting}
-            onClick={(event) => {
-              event.stopPropagation()
-              void deleteCurrent()
-            }}
-          >
-            {isDeleting ? "Deleting" : "Delete"}
-          </button>
+          <div className="flex gap-2">
+            <button type="button" onClick={previousFont} aria-label="Previous font" className="rounded-full border border-current px-3 py-1">←</button>
+            <button type="button" onClick={nextFont} aria-label="Next font" className="rounded-full border border-current px-3 py-1">→</button>
+          </div>
         ) : null}
       </div>
 

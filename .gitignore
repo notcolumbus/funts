@@ -28,3 +28,12 @@ npm-debug.log*
 # Misc
 .DS_Store
 *.pem
+
+.next
+.vinext
+.wrangler
+dist
+worker-configuration.d.ts
+
+# Separate historical repositories
+/legacy/

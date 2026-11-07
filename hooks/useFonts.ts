@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
 
-import type { FontDefinition, FontMerged } from "@/data/fonts"
+import type { FontDefinition, FontMerged } from "@/lib/fonts"
 
-const API = import.meta.env.VITE_FONTS_API_URL ?? "https://api.funts.amans.place"
+const API = ""
 
 function toStringArray(value: unknown) {
   if (!Array.isArray(value)) {
@@ -71,7 +71,14 @@ function parseFont(value: unknown): FontDefinition | null {
   const tags = toStringArray(row.tags_json)
   const technical = getNestedRecord(row.font_json, "technical")
   const meta = getNestedRecord(row.font_json, "meta")
-  const cssUrl = getNestedString(row.font_json, ["meta", "google_css_url"])
+  const candidateUrl = getNestedString(row.font_json, ["meta", "google_css_url"])
+  let cssUrl: string | null = null
+  if (candidateUrl) {
+    try {
+      const url = new URL(candidateUrl)
+      if (url.protocol === "https:" && url.hostname === "fonts.googleapis.com") cssUrl = url.href
+    } catch { /* Fall back to the generated Google Fonts URL. */ }
+  }
   const weights = technical ? toWeights(technical.weights) : []
   const category =
     (typeof technical?.category === "string" ? technical.category : null) ??
@@ -97,7 +104,6 @@ export function useFonts() {
   const [registry, setRegistry] = useState<FontDefinition[]>([])
   const [cursor, setCursor] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
-  const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const current = cursor >= 0 && cursor < registry.length ? registry[cursor] : null
@@ -175,47 +181,11 @@ export function useFonts() {
     })
   }, [registry.length])
 
-  const deleteCurrent = useCallback(async () => {
-    if (!current || isDeleting) {
-      return
-    }
-
-    const deletedFontId = current.id
-    const deletedCursor = cursor
-
-    try {
-      setIsDeleting(true)
-      setError(null)
-
-      const response = await fetch(`${API}/api/fonts/${deletedFontId}`, {
-        method: "DELETE",
-      })
-
-      if (!response.ok) {
-        throw new Error(`Delete failed: ${response.status}`)
-      }
-
-      setRegistry((currentRegistry) => {
-        const nextRegistry = currentRegistry.filter((font) => font.id !== deletedFontId)
-        setCursor(nextRegistry.length === 0 ? -1 : Math.min(deletedCursor, nextRegistry.length - 1))
-        return nextRegistry
-      })
-    } catch (deleteError) {
-      setError(
-        deleteError instanceof Error ? deleteError.message : "Unable to delete font"
-      )
-    } finally {
-      setIsDeleting(false)
-    }
-  }, [current, cursor, isDeleting])
-
   return {
     current,
-    deleteCurrent,
     nextFont,
     previousFont,
     total: registry.length,
-    isDeleting,
     isLoading,
     error,
   }

@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react"
 
-import type { FontDefinition } from "@/data/fonts"
+import type { FontDefinition } from "@/lib/fonts"
 
 async function loadFontWeights(fontName: string) {
   if (!document.fonts) {
@@ -61,6 +61,7 @@ export function useFontLoader() {
       const onError = () => {
         cleanup()
         pendingLoadsRef.current.delete(font.id)
+        link.remove()
         reject(new Error(`Failed to load font stylesheet for ${font.name}`))
       }
 
@@ -68,7 +69,7 @@ export function useFontLoader() {
       link.addEventListener("error", onError)
 
       if (!existingLink) {
-        document.head.append(link)
+        document.head.appendChild(link)
       }
     })
 

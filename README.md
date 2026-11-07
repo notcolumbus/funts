@@ -1,21 +1,28 @@
-# shadcn/ui monorepo template
+# Funts
 
-This is a Vite monorepo template with shadcn/ui.
+A font explorer built with the Next.js App Router and deployed as one Cloudflare Worker. The UI and the read-only `/api/fonts` route are in this repository; the route reads the existing D1 catalog through a Worker binding. Cloudflare's vinext runtime provides the Next.js API on Workers.
 
-## Adding components
+## Local development
 
-To add components to your app, run the following command at the root of your `web` app:
+Requires Node.js 22 or newer and npm.
 
-```bash
-pnpm dlx shadcn@latest add button -c apps/web
+```sh
+npm ci
+npm run seed:local
+npm run dev
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
+The seed creates a small **local-only** D1 database with two sample fonts. It does not create or alter the remote database. Open the address printed by the dev server. The production catalog is not copied locally.
 
-## Using components
+## Checks and deployment
 
-To use the components in your app, import them from the `ui` package.
-
-```tsx
-import { Button } from "@workspace/ui/components/button";
+```sh
+npm run typecheck
+npm run build
+npx wrangler deploy --dry-run --config dist/server/wrangler.json
+npm run deploy
 ```
+
+`wrangler.jsonc` binds `DB` to the existing D1 database ID and gives the new Worker a separate name (`funts-next`). Confirm your Cloudflare account, database binding, domain, and deployment target before deploying. The application only reads the catalog; the old API is a separate deployment and must be secured or retired separately. The checked-in local seed is not a production schema migration or backup.
+
+The browser loads selected fonts from Google Fonts. Font recommendations and catalog administration are not implemented yet.
