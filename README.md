@@ -1,6 +1,6 @@
 # Funts
 
-A font explorer built with the Next.js App Router and deployed as one Cloudflare Worker. The UI and the read-only `/api/fonts` route are in this repository; the route reads the existing D1 catalog through a Worker binding. Cloudflare's vinext runtime provides the Next.js API on Workers.
+A font explorer built with the Next.js App Router and deployed as one Cloudflare Worker. The UI and the `/api/fonts` routes are in this repository; the route reads the existing D1 catalog through a Worker binding. Cloudflare's vinext runtime provides the Next.js API on Workers.
 
 ## Local development
 
@@ -23,6 +23,6 @@ npx wrangler deploy --dry-run --config dist/server/wrangler.json
 npm run deploy
 ```
 
-`wrangler.jsonc` binds `DB` to the existing D1 database ID and targets the existing Git-connected Worker (`funts`). Confirm your Cloudflare account, database binding, domain, and deployment target before deploying. The application only reads the catalog; the old API is a separate deployment and must be secured or retired separately. The checked-in local seed is not a production schema migration or backup.
+`wrangler.jsonc` binds `DB` to the existing D1 database ID and targets the existing Git-connected Worker (`funts`). Confirm your Cloudflare account, database binding, domain, and deployment target before deploying. Anyone can permanently delete fonts from the shared catalog. The old API is a separate deployment. The checked-in local seed is not a production schema migration or backup.
 
-The browser loads selected fonts from Google Fonts. Font recommendations and catalog administration are not implemented yet.
+The browser loads selected fonts from Google Fonts. Font recommendations are not implemented yet.

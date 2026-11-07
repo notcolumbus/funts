@@ -16,6 +16,10 @@ type MainAppProps = {
 export function MainApp({ selectedTheme, onSelectTheme }: MainAppProps) {
   const {
     current,
+    deleteCurrent,
+    isDeleting,
+    position,
+    total,
     error,
     isLoading,
     nextFont,
@@ -56,26 +60,23 @@ export function MainApp({ selectedTheme, onSelectTheme }: MainAppProps) {
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.target instanceof HTMLElement && event.target.isContentEditable) {
-        return
-      }
+      if (event.repeat || isDeleting || event.metaKey || event.ctrlKey || event.altKey) return
+      if (event.target instanceof HTMLElement &&
+          (event.target.isContentEditable || event.target.closest("input, textarea, select, [contenteditable='true']"))) return
 
-      if (event.repeat) {
-        return
-      }
-
-      if (event.code === "Space" || event.key === "ArrowDown") {
+      if (event.key === "ArrowDown" || event.key === "ArrowRight") {
         event.preventDefault()
         nextFont()
-        return
-      }
-
-      if (event.key === "ArrowUp") {
+      } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
         event.preventDefault()
         previousFont()
-        return
+      } else if (event.key.toLowerCase() === "d") {
+        event.preventDefault()
+        void deleteCurrent()
+      } else if (event.code === "Space" && !(event.target instanceof HTMLElement && event.target.closest("button"))) {
+        event.preventDefault()
+        nextFont()
       }
-
     }
 
     window.addEventListener("keydown", handleKeyDown)
@@ -83,7 +84,7 @@ export function MainApp({ selectedTheme, onSelectTheme }: MainAppProps) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [nextFont, previousFont])
+  }, [deleteCurrent, isDeleting, nextFont, previousFont])
 
   const statusText = isLoading
     ? "Loading fonts..."
@@ -136,11 +137,16 @@ export function MainApp({ selectedTheme, onSelectTheme }: MainAppProps) {
       </div>
 
       <div className="absolute bottom-5 left-5 flex items-center gap-3 px-3 py-2">
-        <p className="text-lg leading-tight font-semibold sm:text-xl">{statusText}</p>
+        <div>
+          <p className="text-lg leading-tight font-semibold sm:text-xl">{current?.name ?? statusText}</p>
+          {error && <p role="alert" className="text-sm">{error}</p>}
+        </div>
         {current ? (
-          <div className="flex gap-2">
-            <button type="button" onClick={previousFont} aria-label="Previous font" className="rounded-full border border-current px-3 py-1">←</button>
-            <button type="button" onClick={nextFont} aria-label="Next font" className="rounded-full border border-current px-3 py-1">→</button>
+          <div className="flex items-center gap-2">
+            <span className="text-sm" aria-label={`Font ${position} of ${total}`}>{position} / {total}</span>
+            <button type="button" onClick={previousFont} disabled={isDeleting} aria-label="Previous font" className="rounded-full border border-current px-3 py-1">←</button>
+            <button type="button" onClick={nextFont} disabled={isDeleting} aria-label="Next font" className="rounded-full border border-current px-3 py-1">→</button>
+            <button type="button" disabled={isDeleting} onClick={() => void deleteCurrent()} className="rounded-full border border-current px-3 py-1 text-sm disabled:opacity-50">{isDeleting ? "Deleting…" : "Delete"}</button>
           </div>
         ) : null}
       </div>

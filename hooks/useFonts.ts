@@ -104,6 +104,7 @@ export function useFonts() {
   const [registry, setRegistry] = useState<FontDefinition[]>([])
   const [cursor, setCursor] = useState(-1)
   const [isLoading, setIsLoading] = useState(true)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const current = cursor >= 0 && cursor < registry.length ? registry[cursor] : null
@@ -181,8 +182,27 @@ export function useFonts() {
     })
   }, [registry.length])
 
+  const deleteCurrent = useCallback(async () => {
+    if (!current || isDeleting) return
+    try {
+      setIsDeleting(true)
+      setError(null)
+      const response = await fetch(`/api/fonts/${encodeURIComponent(current.id)}`, { method: "DELETE" })
+      if (!response.ok) throw new Error("Unable to delete font")
+      setRegistry((fonts) => fonts.filter((font) => font.id !== current.id))
+      setCursor((position) => Math.min(position, registry.length - 2))
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Unable to delete font")
+    } finally {
+      setIsDeleting(false)
+    }
+  }, [current, isDeleting, registry.length])
+
   return {
     current,
+    deleteCurrent,
+    isDeleting,
+    position: cursor + 1,
     nextFont,
     previousFont,
     total: registry.length,

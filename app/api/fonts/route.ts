@@ -30,7 +30,7 @@ export async function GET() {
         font_json: { technical: font.technical, meta: font.meta } }
     })
     return Response.json({ count: fonts.length, fonts }, {
-      headers: { "Cache-Control": "public, max-age=60, s-maxage=300" },
+      headers: { "Cache-Control": "no-store" },
     })
   } catch (error) {
     console.error("Catalog read failed", error)

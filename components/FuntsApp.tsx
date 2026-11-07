@@ -17,7 +17,7 @@ export function FuntsApp() {
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.code !== "Space" || event.repeat) {
+      if (hasStarted || event.code !== "Space" || event.repeat) {
         return
       }
 
@@ -30,7 +30,7 @@ export function FuntsApp() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [])
+  }, [hasStarted])
 
   return (
     <main className="h-screen w-screen overflow-hidden" onClick={startApp}>
